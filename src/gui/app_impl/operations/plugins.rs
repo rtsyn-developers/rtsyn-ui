@@ -2518,8 +2518,8 @@ mod tests {
 
         let metadata = runtime_node_metadata_from_response(&response).unwrap();
         let installed = metadata.into_installed_plugin(
-            PathBuf::from("/tmp/rtsyn-adder"),
-            Some(PathBuf::from("/tmp/rtsyn-adder/librtsyn-adder.so")),
+            PathBuf::from("rtsyn-adder"),
+            Some(PathBuf::from("rtsyn-adder/librtsyn-adder.so")),
             None,
         );
 
@@ -2654,16 +2654,20 @@ default = "/dev/comedi0"
 
     #[test]
     fn runtime_module_descriptor_name_accepts_built_library_and_xmake_root() {
+        let forwarder_library = PathBuf::from("rtsyn-forwarder")
+            .join("build")
+            .join("linux")
+            .join("x86_64")
+            .join("release")
+            .join("librtsyn-forwarder.so");
         assert_eq!(
-            runtime_module_descriptor_name(
-                "/home/seregio/Desktop/stuff/projects/rtsyn/rtsyn-forwarder/build/linux/x86_64/release/librtsyn-forwarder.so"
-            ),
+            runtime_module_descriptor_name(forwarder_library.to_string_lossy().as_ref()),
             "forwarder"
         );
+
+        let adder_project = PathBuf::from("rtsyn-adder").join("xmake.lua");
         assert_eq!(
-            runtime_module_descriptor_name(
-                "/home/seregio/Desktop/stuff/projects/rtsyn/rtsyn-adder/xmake.lua"
-            ),
+            runtime_module_descriptor_name(adder_project.to_string_lossy().as_ref()),
             "adder"
         );
     }
